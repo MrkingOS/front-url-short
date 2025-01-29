@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,6 +10,20 @@ const UrlShort = () => {
   const [customId, setCustomId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const errorMessage = params.get("error");
+
+    if (errorMessage) {
+      if (errorMessage === "invalid-url") {
+        setError('URL not found');
+        toast.error("Invalid short URL. Please check and try again.");
+      } else if (errorMessage === "server-error") {
+        toast.error("Server error. Please try again later.");
+      }
+    }
+  }, []);
 
   const isValidUrl = (url) => {
     const pattern = new RegExp(
@@ -81,6 +95,8 @@ const UrlShort = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          name="longUrl"
+          data-testid="long-url-input"
           placeholder="Enter a long URL"
           value={longUrl}
           onChange={(e) => setLongUrl(e.target.value)}
@@ -93,19 +109,29 @@ const UrlShort = () => {
           onChange={(e) => setCustomId(e.target.value)}
           className="input"
         />
-        <button type="submit" className="button" disabled={loading}>
+        <button
+          type="submit"
+          data-testid="submit-button"
+          className="button"
+          disabled={loading}
+        >
           {loading ? "Shortening..." : "Short it"}
         </button>
       </form>
 
-      {error && <p className="error">{error}</p>}
+      {error && <p data-testid="error-message" className="error">{error}</p>}
       {shortUrl && (
         <div className="result">
           <p>Shortened URL:</p>
-          <a href={`http://${shortUrl}`} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`http://${shortUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="short-url"
+          >
             {shortUrl}
           </a>
-          <button onClick={handleCopy} className="copy-button">
+          <button onClick={handleCopy} className="copy-button" data-testid="copy-button">
             <AiOutlineCopy />
           </button>
         </div>
