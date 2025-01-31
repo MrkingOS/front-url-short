@@ -55,7 +55,7 @@ const UrlShort = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/shorten", { 
+      const response = await axios.post("https://back-url-short.onrender.com/shorten", { 
         longUrl, 
         customId: customId || undefined
       });
@@ -124,7 +124,7 @@ const UrlShort = () => {
         <div className="result">
           <p>Shortened URL:</p>
           <a
-            href={`http://${shortUrl}`}
+            href={`https://${shortUrl}`}
             target="_blank"
             rel="noopener noreferrer"
             data-testid="short-url"
